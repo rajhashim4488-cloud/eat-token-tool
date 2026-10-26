@@ -117,7 +117,7 @@
         }
 
         @keyframes fadeIn {
-                    from {
+            from {
                 opacity: 0;
                 transform: translateY(10px);
             }
@@ -193,6 +193,12 @@
             gap: 8px;
         }
 
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
         .info-item {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -214,6 +220,7 @@
             color: #fff;
             margin-top: 2px;
             font-family: monospace;
+            word-break: break-all;
         }
 
         .scroll-box-token {
@@ -258,7 +265,6 @@
             <!-- Header with HSxMASTER Logo & Title -->
             <div class="flex flex-col items-center mb-6">
                 <div class="relative w-24 h-24 mb-3 rounded-full p-1 bg-gradient-to-tr from-purple-500 to-fuchsia-500 shadow-[0_0_40px_rgba(217,70,239,0.3)]">
-                    <!-- Aap is image filename (logo.jpg) ko apne same folder me rakhein ya direct link add kar dein -->
                     <img src="logo.jpg" class="w-full h-full rounded-full object-cover bg-black" alt="HSxMASTER Logo" onerror="this.src='https://via.placeholder.com/150/000000/FFFFFF?text=HSxMASTER'" />
                 </div>
                 <h1 class="text-2xl font-bold title-font text-white text-center leading-tight">
@@ -301,7 +307,7 @@
                                 <p class="text-[10px] text-gray-400 mb-1">Example URL:</p>
                                 <code class="text-[9px] text-gray-300 break-all block leading-tight">https://discstore.kiosgamer.com.id/?eat=14f060774299fb93a5...&amp;lang=en&amp;region=IND&amp;account_id=7669969208&amp;nickname=...</code>
                             </div>
-                            <p class="text-[10px] text-gray-500">The tool will extract the eat token automatically</p>
+                            <p class="text-[10px] text-gray-500">The tool will extract details and eat token automatically</p>
                         </div>
                     </div>
                     <div class="flex gap-3 text-[11px] text-gray-400">
@@ -342,7 +348,7 @@
                     <button onclick="clearInput()" id="clearBtn" class="absolute right-3 top-3.5 text-gray-500 hover:text-red-500 transition hidden">
                         <i class="fas fa-times text-lg"></i>
                     </button>
-                                    </div>
+                </div>
                 <div class="flex justify-between mt-2">
                     <span class="text-[10px] text-gray-600">Supports full URL or raw token</span>
                 </div>
@@ -477,14 +483,28 @@
             }
         });
 
-        function extractEatToken(input) {
-            if (input.includes('eat=')) {
-                const match = input.match(/[?&]eat=([^&]+)/);
-                if (match && match[1]) {
-                    return match[1];
+        function extractUrlParam(input, name) {
+            try {
+                // Agar input full URL nahi hai lekin parameters hain ya URL hai
+                let urlStr = input;
+                if (!input.startsWith('http') && input.includes('?')) {
+                    urlStr = 'http://localhost/?' + input.split('?')[1];
+                } else if (!input.startsWith('http') && input.includes('eat=')) {
+                    urlStr = 'http://localhost/?' + input;
                 }
+                const url = new URL(urlStr);
+                return url.searchParams.get(name);
+            } catch (e) {
+                // Fallback Regex
+                const match = input.match(new RegExp('[?&]' + name + '=([^&]+)'));
+                return match ? decodeURIComponent(match[1]) : null;
             }
-            return input;
+        }
+
+        function extractEatToken(input) {
+            const eat = extractUrlParam(input, 'eat');
+            if (eat) return eat;
+            return input.trim();
         }
 
         function decodeNickname(encoded) {
@@ -585,6 +605,11 @@
                 return;
             }
 
+            // URL se direct parameters pehle hi nikaal lein taake agar API mein na milein toh URL wale use hon
+            const urlNickname = extractUrlParam(input, 'nickname');
+            const urlRegion = extractUrlParam(input, 'region');
+            const urlUid = extractUrlParam(input, 'account_id') || extractUrlParam(input, 'uid');
+
             const eatToken = extractEatToken(input);
             if (!eatToken) {
                 errorTitle.innerText = 'Invalid Input';
@@ -624,29 +649,38 @@
                     return;
                 }
 
+                // 1. Nickname Fix & Priority
                 let nickname = '-';
-                if (result.jwt_decoded && result.jwt_decoded.payload && result.jwt_decoded.payload.nickname) {
+                if (urlNickname && urlNickname !== 'undefined' && urlNickname !== '') {
+                    nickname = decodeNickname(urlNickname);
+                } else if (result.jwt_decoded && result.jwt_decoded.payload && result.jwt_decoded.payload.nickname) {
                     nickname = decodeNickname(result.jwt_decoded.payload.nickname);
                 } else if (result.nickname) {
-                    nickname = result.nickname;
+                    nickname = decodeNickname(result.nickname);
                 }
                 document.getElementById('nick').innerText = nickname;
 
+                // 2. Region Fix & Priority
                 let region = '-';
-                if (result.region) {
+                if (urlRegion && urlRegion !== 'undefined' && urlRegion !== '') {
+                    region = urlRegion;
+                } else if (result.region) {
                     region = result.region;
                 } else if (result.jwt_decoded && result.jwt_decoded.payload && result.jwt_decoded.payload.noti_region) {
                     region = result.jwt_decoded.payload.noti_region;
                 }
                 document.getElementById('reg').innerText = region;
 
+                // 3. UID Fix & Priority
                 let uid = '-';
-                if (result.account_uid) {
+                if (urlUid && urlUid !== 'undefined' && urlUid !== '') {
+                    uid = urlUid;
+                } else if (result.account_uid) {
                     uid = result.account_uid;
                 } else if (result.jwt_decoded && result.jwt_decoded.payload && result.jwt_decoded.payload.account_id) {
                     uid = String(result.jwt_decoded.payload.account_id);
                 } else if (result.Uid) {
-                    uid = result.Uid;
+                    uid = String(result.Uid);
                 }
                 document.getElementById('aid').innerText = uid;
 
