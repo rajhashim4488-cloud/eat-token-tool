@@ -360,7 +360,8 @@ async function processToken(){
     document.getElementById('jwtContainer').classList.add('hidden');
     currentResponseData=null;
 
-    if(!input){tokenInp.focus();
+    if(!input){
+        tokenInp.focus();
         return;
     }
 
@@ -482,4 +483,3 @@ for(let i=0;i<modals.length;i++){
 </script>
 </body>
 </html>
-        
