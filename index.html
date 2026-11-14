@@ -8,251 +8,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.tailwindcss.com/"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&family=Montserrat:wght@700;800;900&display=swap');
-
-:root {
-    --primary: #d946ef;
-    --primary-glow: rgba(217, 70, 239, 0.35);
-    --dark-bg: #030014;
-}
-
-body {
-    font-family: 'Space Grotesk', sans-serif;
-    background-color: var(--dark-bg);
-    color: #e2e8f0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow-x: hidden;
-    padding: 20px;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px;
-}
-
-/* ==================== INTRO SPLASH SCREEN STYLES ==================== */
-#intro-overlay {
-    position: fixed;
-    inset: 0;
-    background: #000000;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-    overflow: hidden;
-}
-
-#intro-overlay.fade-out {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-/* Subtle red/purple radial glow in background like video */
-.intro-bg-glow {
-    position: absolute;
-    width: 340px;
-    height: 340px;
-    background: radial-gradient(circle, rgba(217, 70, 239, 0.14) 0%, rgba(220, 38, 38, 0.06) 45%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 1s ease;
-}
-
-.intro-bg-glow.show {
-    opacity: 1;
-}
-
-/* Brand Logo Container */
-.brand-wrapper {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(1.15);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    z-index: 10001;
-    transition: all 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.brand-wrapper.top-left {
-    top: 22px;
-    left: 20px;
-    transform: translate(0, 0) scale(0.68);
-}
-
-.brand-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
-    font-size: 28px;
-    letter-spacing: 1.5px;
-    white-space: nowrap;
-}
-
-.brand-white {
-    color: #ffffff;
-}
-
-.brand-accent {
-    color: #ef4444; /* Red accent like video, change to #d946ef if you want pink */
-}
-
-.verified-badge {
-    width: 22px;
-    height: 22px;
-    background: #1d9bf0;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 11px;
-    opacity: 0;
-    transform: scale(0);
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 0 12px rgba(29, 155, 240, 0.6);
-}
-
-.verified-badge.pop {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.brand-underline {
-    height: 3.5px;
-    width: 0%;
-    background: linear-gradient(90deg, #ef4444, #d946ef);
-    border-radius: 4px;
-    margin-top: 5px;
-    transition: width 0.55s ease-out;
-    box-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
-}
-
-.brand-underline.expand {
-    width: 82%;
-}
-
-/* Center Action Box */
-.intro-center-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: all 0.7s ease;
-    z-index: 10000;
-    padding: 0 20px;
-}
-
-.intro-center-box.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.intro-sub {
-    font-size: 11px;
-    letter-spacing: 3px;
-    color: #9ca3af;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-}
-
-.intro-title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: #ffffff;
-    text-transform: uppercase;
-}
-
-.intro-arrow {
-    color: #9ca3af;
-    font-size: 14px;
-    margin: 14px 0 18px 0;
-    animation: bounceArrow 1.5s infinite;
-}
-
-@keyframes bounceArrow {
-    0%, 100% { transform: translateY(0); opacity: 0.6; }
-    50% { transform: translateY(6px); opacity: 1; }
-}
-
-.glow-open-btn {
-    background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
-    color: #ffffff;
-    border: none;
-    border-radius: 9999px;
-    padding: 14px 32px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    cursor: pointer;
-    box-shadow: 0 0 28px rgba(14, 165, 233, 0.65), 0 0 60px rgba(37, 99, 235, 0.35);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    animation: pulseGlow 2.2s infinite ease-in-out;
-}
-
-.glow-open-btn:hover {
-    transform: scale(1.04);
-    box-shadow: 0 0 38px rgba(14, 165, 233, 0.9), 0 0 75px rgba(37, 99, 235, 0.5);
-}
-
-.glow-open-btn:active {
-    transform: scale(0.97);
-}
-
-@keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 25px rgba(14, 165, 233, 0.6), 0 0 50px rgba(37, 99, 235, 0.3); }
-    50% { box-shadow: 0 0 38px rgba(14, 165, 233, 0.9), 0 0 75px rgba(37, 99, 235, 0.55); }
-}
-
-.btn-badge-icon {
-    width: 28px;
-    height: 28px;
-    background: #ffffff;
-    color: #0284c7;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-}
-
-.btn-label-stack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    line-height: 1.2;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 800;
-    font-size: 11px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-/* Main App Container Fade-in */
-#main-app-wrapper {
-    opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-#main-app-wrapper.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ==================== ORIGINAL STYLES ==================== */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+:root{--primary:#d946ef;--primary-glow:rgba(217,70,239,0.35);--dark-bg:#030014;}
+body{font-family:'Space Grotesk',sans-serif;background-color:var(--dark-bg);color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden;padding:20px;background-image:linear-gradient(rgba(255,255,255,0.03)1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03)1px,transparent 1px);background-size:30px 30px;}
 .cyber-card{background:rgba(10,10,12,0.7);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);border-radius:24px;box-shadow:0 20px 40px -10px rgba(0,0,0,0.5);position:relative;overflow:hidden;}
 .cyber-card::before{content:"";position:absolute;inset:0;border-radius:24px;padding:1px;background:linear-gradient(180deg,rgba(255,255,255,0.15),transparent 60%);-webkit-mask:linear-gradient(#fff 0 0)content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;}
 .title-font{font-family:'Rajdhani',sans-serif;}
@@ -287,38 +45,7 @@ body {
 </style>
 </head>
 <body>
-
-<!-- ==================== INTRO CREDIT ANIMATION SCREEN ==================== -->
-<div id="intro-overlay">
-    <div class="intro-bg-glow" id="introBgGlow"></div>
-
-    <!-- Animated Credit Logo (Starts Center -> Moves Top-Left) -->
-    <div class="brand-wrapper" id="brandWrapper">
-        <div class="brand-row">
-            <span><span class="brand-white" id="typedWhite"></span><span class="brand-accent" id="typedAccent"></span></span>
-            <span class="verified-badge" id="verifiedBadge"><i class="fas fa-check"></i></span>
-        </div>
-        <div class="brand-underline" id="brandUnderline"></div>
-    </div>
-
-    <!-- Center Prompt & Glowing Button -->
-    <div class="intro-center-box" id="introCenterBox">
-        <span class="intro-sub">CLICK TO OPEN</span>
-        <span class="intro-title">EAT TOKEN WEBSITE</span>
-        <i class="fas fa-arrow-down intro-arrow"></i>
-        <button class="glow-open-btn" onclick="enterWebsite()">
-            <span class="btn-badge-icon"><i class="fas fa-check"></i></span>
-            <span class="btn-label-stack">
-                <span>OPEN</span>
-                <span>EAT TOKEN</span>
-                <span>WEBSITE</span>
-            </span>
-        </button>
-    </div>
-</div>
-
-<!-- ==================== MAIN WEBSITE CONTENT ==================== -->
-<div id="main-app-wrapper" class="w-full max-w-[480px] relative z-10">
+<div class="w-full max-w-[480px] relative z-10">
     <div class="cyber-card p-6 sm:p-8">
         <!-- Header & Logo -->
         <div class="flex flex-col items-center mb-6">
@@ -516,61 +243,6 @@ body {
 </div>
 
 <script>
-// ==================== INTRO ANIMATION SCRIPT ====================
-window.addEventListener('DOMContentLoaded', () => {
-    const part1 = "HSx";
-    const part2 = "MASTER";
-    const typedWhite = document.getElementById('typedWhite');
-    const typedAccent = document.getElementById('typedAccent');
-    const verifiedBadge = document.getElementById('verifiedBadge');
-    const brandUnderline = document.getElementById('brandUnderline');
-    const brandWrapper = document.getElementById('brandWrapper');
-    const introCenterBox = document.getElementById('introCenterBox');
-    const introBgGlow = document.getElementById('introBgGlow');
-
-    let i = 0;
-    const totalLen = part1.length + part2.length;
-
-    // Step 1: Typewriter effect for HSxMASTER
-    const typeInterval = setInterval(() => {
-        if (i < part1.length) {
-            typedWhite.textContent += part1[i];
-        } else if (i < totalLen) {
-            typedAccent.textContent += part2[i - part1.length];
-        } else {
-            clearInterval(typeInterval);
-
-            // Step 2: Pop verified badge & draw underline
-            setTimeout(() => {
-                verifiedBadge.classList.add('pop');
-                brandUnderline.classList.add('expand');
-            }, 150);
-
-            // Step 3: Move brand logo to top-left corner
-            setTimeout(() => {
-                brandWrapper.classList.add('top-left');
-            }, 1100);
-
-            // Step 4: Reveal center prompt and glowing button
-            setTimeout(() => {
-                introBgGlow.classList.add('show');
-                introCenterBox.classList.add('visible');
-            }, 1750);
-        }
-        i++;
-    }, 110);
-});
-
-function enterWebsite() {
-    const overlay = document.getElementById('intro-overlay');
-    const mainApp = document.getElementById('main-app-wrapper');
-    overlay.classList.add('fade-out');
-    setTimeout(() => {
-        mainApp.classList.add('revealed');
-    }, 250);
-}
-
-// ==================== ORIGINAL APP SCRIPT ====================
 let currentResponseData=null;
 const tokenInp=document.getElementById('tokenInp');
 const clearBtn=document.getElementById('clearBtn');
@@ -754,8 +426,7 @@ async function processToken(){
             document.getElementById('nick').innerText='User '+result.accountId;
         }
 
-        if(result.lockRegion){
-            document.getElementById('reg').innerText=result.lockRegion;
+        if(result.lockRegion){Region;
         }else if(result.noti_region){
             document.getElementById('reg').innerText=result.noti_region;
         }else if(result.region){
@@ -811,3 +482,4 @@ for(let i=0;i<modals.length;i++){
 </script>
 </body>
 </html>
+            document.getElementById('reg').innerText=result.lock
