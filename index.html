@@ -360,8 +360,7 @@ async function processToken(){
     document.getElementById('jwtContainer').classList.add('hidden');
     currentResponseData=null;
 
-    if(!input){
-        tokenInp.focus();
+    if(!input){tokenInp.focus();
         return;
     }
 
@@ -426,7 +425,8 @@ async function processToken(){
             document.getElementById('nick').innerText='User '+result.accountId;
         }
 
-        if(result.lockRegion){Region;
+        if(result.lockRegion){
+            document.getElementById('reg').innerText=result.lockRegion;
         }else if(result.noti_region){
             document.getElementById('reg').innerText=result.noti_region;
         }else if(result.region){
@@ -482,4 +482,4 @@ for(let i=0;i<modals.length;i++){
 </script>
 </body>
 </html>
-            document.getElementById('reg').innerText=result.lock
+        
